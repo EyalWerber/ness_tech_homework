@@ -1,0 +1,80 @@
+2026-04-27 18:03:40 | INFO     | utils.selector_store | [selector-store] Loaded data\selectors.json
+2026-04-27 18:03:41 | INFO     | conftest | [session] Reusing saved session: reports\session_state.json
+2026-04-27 18:03:41 | INFO     | utils.driver_factory | Restoring session state from: reports\session_state.json
+2026-04-27 18:03:42 | INFO     | utils.driver_factory | Browser 'chromium' launched (headless=False, timeout=none, session=restored)
+2026-04-27 18:03:42 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/checkout/cart
+2026-04-27 18:04:03 | INFO     | pages.cart_page | Cart cleared – 5 item(s) removed.
+2026-04-27 18:04:03 | INFO     | utils.driver_factory | Driver factory: cleanup complete.
+2026-04-27 18:04:04 | INFO     | utils.driver_factory | Restoring session state from: reports\session_state.json
+2026-04-27 18:04:04 | INFO     | utils.driver_factory | Browser 'chromium' launched (headless=False, timeout=none, session=restored)
+2026-04-27 18:04:04 | INFO     | pages.base_page | Navigating → https://www.terminalx.com
+2026-04-27 18:04:09 | INFO     | tests.test_e2e_flow | [auth] Session confirmed.
+2026-04-27 18:04:09 | INFO     | utils.driver_factory | Driver factory: cleanup complete.
+2026-04-27 18:04:10 | INFO     | utils.driver_factory | Restoring session state from: reports\session_state.json
+2026-04-27 18:04:10 | INFO     | utils.driver_factory | Browser 'chromium' launched (headless=False, timeout=none, session=restored)
+2026-04-27 18:04:10 | INFO     | pages.search_page | Opening search results URL: https://www.terminalx.com/catalogsearch/result/?q=מקסי
+2026-04-27 18:04:10 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/catalogsearch/result/?q=מקסי
+2026-04-27 18:04:15 | INFO     | pages.search_page | Price filter ≤ ₪200.0 applied in-memory during URL collection.
+2026-04-27 18:04:15 | DEBUG    | pages.search_page |   Skipped ₪430 > ₪200.0: https://www.terminalx.com/default-category/r686410002?color=
+2026-04-27 18:04:15 | DEBUG    | pages.search_page |   Skipped ₪430 > ₪200.0: https://www.terminalx.com/default-category/r686410001?color=
+2026-04-27 18:04:15 | INFO     | pages.search_page |   + ₪150  https://www.terminalx.com/default-category/r677065700?color=9132
+2026-04-27 18:04:15 | INFO     | pages.search_page |   + ₪200  https://www.terminalx.com/default-category/w702150001?color=4
+2026-04-27 18:04:15 | INFO     | pages.search_page |   + ₪200  https://www.terminalx.com/default-category/w702150002?color=106
+2026-04-27 18:04:15 | INFO     | pages.search_page |   + ₪120  https://www.terminalx.com/default-category/w576240001?color=4
+2026-04-27 18:04:15 | INFO     | pages.search_page |   + ₪120  https://www.terminalx.com/default-category/w576270001?color=4
+2026-04-27 18:04:15 | INFO     | pages.search_page | Collected 5 URL(s) matching ≤ ₪200.0.
+2026-04-27 18:04:15 | INFO     | tests.test_e2e_flow | Search collected 5 URL(s) ≤ ₪200.0.
+2026-04-27 18:04:15 | INFO     | utils.driver_factory | Driver factory: cleanup complete.
+2026-04-27 18:04:16 | INFO     | utils.driver_factory | Restoring session state from: reports\session_state.json
+2026-04-27 18:04:17 | INFO     | utils.driver_factory | Browser 'chromium' launched (headless=False, timeout=none, session=restored)
+2026-04-27 18:04:17 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/r677065700?color=9132
+2026-04-27 18:04:21 | INFO     | pages.item_page | Colour selected.
+2026-04-27 18:04:23 | INFO     | pages.item_page | Size selected: XS
+2026-04-27 18:04:24 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-04-27 18:04:24 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-04-27 18:04:25 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-04-27 18:04:25 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260427_180425.png
+2026-04-27 18:04:25 | INFO     | tests.test_e2e_flow | Item 1 added.
+2026-04-27 18:04:25 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/w702150001?color=4
+2026-04-27 18:04:29 | INFO     | pages.item_page | Colour selected.
+2026-04-27 18:04:31 | INFO     | pages.item_page | Size selected: S
+2026-04-27 18:04:32 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-04-27 18:04:32 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-04-27 18:04:33 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-04-27 18:04:33 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260427_180433.png
+2026-04-27 18:04:33 | INFO     | tests.test_e2e_flow | Item 2 added.
+2026-04-27 18:04:33 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/w702150002?color=106
+2026-04-27 18:04:37 | INFO     | pages.item_page | Colour selected.
+2026-04-27 18:04:39 | INFO     | pages.item_page | Size selected: S
+2026-04-27 18:04:40 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-04-27 18:04:40 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-04-27 18:04:41 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-04-27 18:04:41 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260427_180441.png
+2026-04-27 18:04:41 | INFO     | tests.test_e2e_flow | Item 3 added.
+2026-04-27 18:04:41 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/w576240001?color=4
+2026-04-27 18:04:45 | INFO     | pages.item_page | Colour selected.
+2026-04-27 18:04:47 | INFO     | pages.item_page | Size selected: S
+2026-04-27 18:04:48 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-04-27 18:04:49 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-04-27 18:04:50 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-04-27 18:04:50 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260427_180450.png
+2026-04-27 18:04:50 | INFO     | tests.test_e2e_flow | Item 4 added.
+2026-04-27 18:04:50 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/w576270001?color=4
+2026-04-27 18:04:53 | INFO     | pages.item_page | Colour selected.
+2026-04-27 18:04:55 | INFO     | pages.item_page | Size selected: XS
+2026-04-27 18:04:56 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-04-27 18:04:56 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-04-27 18:04:57 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-04-27 18:04:57 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260427_180457.png
+2026-04-27 18:04:57 | INFO     | tests.test_e2e_flow | Item 5 added.
+2026-04-27 18:04:57 | INFO     | tests.test_e2e_flow | 5/5 item(s) added to cart.
+2026-04-27 18:04:58 | INFO     | utils.driver_factory | Driver factory: cleanup complete.
+2026-04-27 18:04:58 | INFO     | utils.driver_factory | Restoring session state from: reports\session_state.json
+2026-04-27 18:04:59 | INFO     | utils.driver_factory | Browser 'chromium' launched (headless=False, timeout=none, session=restored)
+2026-04-27 18:04:59 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/checkout/cart
+2026-04-27 18:05:07 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\cart_total_check_20260427_180506.png
+2026-04-27 18:05:07 | INFO     | pages.cart_page | Cart total: ₪789.53
+2026-04-27 18:05:07 | INFO     | pages.cart_page | Cart check → total=₪789.53, threshold=₪1000.00, items=5
+2026-04-27 18:05:07 | INFO     | pages.cart_page | Cart assertion PASSED ✓
+2026-04-27 18:05:07 | INFO     | tests.test_e2e_flow | Cart total ≤ ₪1000.00 — PASSED.
+2026-04-27 18:05:07 | INFO     | utils.driver_factory | Driver factory: cleanup complete.

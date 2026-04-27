@@ -1,0 +1,27 @@
+{
+  "login": {
+    "email_input": "#qa-login-email-input",
+    "password_input": "#qa-login-password-input",
+    "submit_button": "[data-test-id='qa-login-submit']",
+    "logged_in_indicator": "[data-test-id='qa-header-profile-button']",
+    "popup_close": "button[class*='close_3POI']"
+  },
+  "search": {
+    "product_card": "li[class*='listing-product']",
+    "product_link": "li[class*='listing-product'] a[class*='title']",
+    "product_price": "li[class*='listing-product'] div[class*='final-price']"
+  },
+  "product": {
+    "size_option": "[data-test-id='qa-size-item']",
+    "color_option": "[data-test-id='qa-color-item']",
+    "add_to_cart": "[data-test-id='qa-add-to-cart-button']",
+    "mini_cart_indicator": "[data-test-id='qa-minicart-product-name']",
+    "mini_cart_close": "button[class*='close_3POI']"
+  },
+  "cart": {
+    "order_total": "[data-test-id='qa-order-totals-total-order']",
+    "cart_item": "[data-test-id='qa-cart-product-name']",
+    "empty_cart": ".cart-empty",
+    "remove_item": "button[class*='remove_wqPe']:not([class*='close_3POI'])"
+  }
+}

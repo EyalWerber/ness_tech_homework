@@ -1,0 +1,7 @@
+{
+  "query": "מקסי",
+  "max_price": 200,
+  "limit": 5,
+  "budget_per_item": 200,
+  "currency": "ILS"
+}

@@ -1,0 +1,15 @@
+# Credentials
+.env
+
+# Session cookies
+reports/session_state.json
+
+# Test output
+reports/screenshots/
+reports/allure-results/
+reports/ai_failure_analysis.txt
+
+# Python
+__pycache__/
+*.pyc
+.venv/
