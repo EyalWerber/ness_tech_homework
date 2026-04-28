@@ -29,6 +29,10 @@ from utils.helpers import retry, take_screenshot
 from utils.logger import get_logger
 from utils.selector_store import sel
 
+
+class ProductUnavailableError(Exception):
+    """Product cannot be purchased (COMING SOON, sold out, or disabled button)."""
+
 logger = get_logger(__name__)
 
 _SEL_SIZE_BTN       = sel("product", "size_option")
@@ -122,8 +126,22 @@ class ItemPage(BasePage):
         except Exception:
             pass
 
+    def _check_available(self) -> None:
+        """Raise ProductUnavailableError if the add-to-cart button is disabled (COMING SOON / sold out)."""
+        try:
+            btn = self.page.locator(_SEL_ADD_TO_CART).first
+            btn.wait_for(state="visible", timeout=6_000)
+            if btn.get_attribute("disabled") is not None:
+                text = btn.inner_text().strip()
+                raise ProductUnavailableError(f"Add-to-cart button is disabled: '{text}'")
+        except ProductUnavailableError:
+            raise
+        except Exception:
+            pass
+
     def add_item_with_screenshot(self, url: str) -> str:
         self.open(url)
+        self._check_available()
         self.handle_variants()
         self.add_to_cart()
         path = take_screenshot(self.page, "item_added", config.SCREENSHOT_DIR)

@@ -23,7 +23,7 @@ import allure
 import pytest
 
 from pages.cart_page import CartPage
-from pages.item_page import ItemPage
+from pages.item_page import ItemPage, ProductUnavailableError
 from pages.login_page import LoginPage
 from pages.search_page import SearchPage
 from utils.config_loader import config
@@ -157,6 +157,8 @@ class TestE2EFlow:
                         name=f"item_{idx}_added",
                         attachment_type=allure.attachment_type.PNG,
                     )
+                except ProductUnavailableError as exc:
+                    logger.info(f"Item {idx} COMING SOON – skipped: {url[:70]} | {exc}")
                 except Exception as exc:
                     logger.warning(f"Item {idx} FAILED: {url[:70]} | {exc}")
                     failed_urls.append(url)
