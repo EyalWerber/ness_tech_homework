@@ -56,7 +56,8 @@ The suite runs 5 tests in order:
 ```
 terminalx_automation/
 ├── tests/
-│   └── test_e2e_flow.py
+│   ├── test_e2e_flow.py
+│   └── test_ai_features.py  ← skipped unless AI_ENABLED=true
 ├── pages/
 │   ├── base_page.py        ← shared navigation + AI self-healing
 │   ├── login_page.py
@@ -74,10 +75,24 @@ terminalx_automation/
 ```
 
 ## AI Features
+# Added for maximum robustness!!!
 
-**Self-healing locators** — if a selector fails, the page HTML is sent to an AI model which suggests a working replacement. Enabled by default, toggle with `AI_SELF_HEALING_ENABLED=false`.
+**Self-healing locators** — if a selector fails, a Pydantic AI agent takes over. It has two tools: one to scan the live page for interactive elements, and one to verify a candidate selector is actually visible before returning it. This means the AI checks its own answer against the real browser instead of guessing from raw HTML. Toggle with `AI_SELF_HEALING_ENABLED=false`.
 
-**Failure analysis** — on test failure, the error and stack trace are sent to AI for a root cause summary. The result is attached to the Allure report. Toggle with `AI_FAILURE_ANALYSIS_ENABLED=false`.
+**Failure analysis** — on test failure, the error and stack trace are sent to an [instructor](https://python.useinstructor.com)-powered call. Instructor patches the OpenAI client so you declare a typed Pydantic model (`root_cause`, `suggested_fix`, `confidence`, etc.) and get that object back directly — no prompt engineering, no JSON parsing. The result is attached to the Allure report. Toggle with `AI_FAILURE_ANALYSIS_ENABLED=false`.
+
+Both features are off by default (`AI_ENABLED=false`). To enable, set `AI_ENABLED=true` in `.env` and configure a backend:
+
+```
+# Local (Ollama)
+OLLAMA_BASE_URL=http://localhost:11434/v1
+MODEL_NAME=qwen2.5
+
+# or OpenAI
+OPENAI_API_KEY=your_key_here
+```
+
+`tests/test_ai_features.py` contains two dedicated tests that demonstrate these features — one that uses a deliberately broken selector to trigger self-healing, and one that runs failure analysis on a synthetic error. They are **automatically skipped** when `AI_ENABLED=false`, so they never block the normal test run.
 
 ## Session Reuse
 

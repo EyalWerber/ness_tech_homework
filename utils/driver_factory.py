@@ -19,13 +19,14 @@ class DriverFactory:
 
     def create(self, storage_state: str | None = None) -> Page:
         self._playwright = sync_playwright().start()
-        launcher = getattr(self._playwright, config.BROWSER)
+        launcher = getattr(self._playwright, config.BROWSER)  # e.g. playwright.chromium
         self._browser = launcher.launch(
             headless=config.HEADLESS,
             slow_mo=config.SLOW_MO,
             args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
         )
 
+        # Browser context = one isolated "profile" (cookies, storage, viewport, headers).
         context_kwargs: dict = dict(
             viewport={"width": 1440, "height": 900},
             user_agent=(
@@ -40,46 +41,39 @@ class DriverFactory:
         )
 
         if storage_state:
+            # Restore saved cookies/localStorage so we don't need to log in again.
             context_kwargs["storage_state"] = storage_state
-            logger.info(f"Restoring session state from: {storage_state}")
 
         self._context = self._browser.new_context(**context_kwargs)
         self._context.set_default_timeout(config.REQUEST_TIMEOUT)
-
         self._page = self._context.new_page()
-        logger.info(
-            f"Browser '{config.BROWSER}' launched "
-            f"(headless={config.HEADLESS}, timeout={config.REQUEST_TIMEOUT or 'none'}, "
-            f"session={'restored' if storage_state else 'fresh'})"
-        )
         return self._page
 
     def save_session_state(self, path: str) -> None:
+        # Dump cookies + localStorage to a JSON file so the next run can skip login.
         if self._context is None:
             raise RuntimeError("No active context – call create() first.")
         pathlib.Path(path).parent.mkdir(parents=True, exist_ok=True)
         self._context.storage_state(path=path)
-        logger.info(f"Session state saved → {path}")
 
     def quit(self):
-        for obj, label in [
-            (self._page, "page"),
-            (self._context, "context"),
-            (self._browser, "browser"),
-        ]:
-            if obj is None:
-                continue
-            try:
-                if hasattr(obj, "is_closed") and obj.is_closed():
-                    continue
-                obj.close()
-            except Exception as exc:
-                logger.warning(f"Error closing {label}: {exc}")
-
-        if self._playwright:
-            try:
+        try:
+            if self._page and not self._page.is_closed():
+                self._page.close()
+        except Exception:
+            pass
+        try:
+            if self._context:
+                self._context.close()
+        except Exception:
+            pass
+        try:
+            if self._browser:
+                self._browser.close()
+        except Exception:
+            pass
+        try:
+            if self._playwright:
                 self._playwright.stop()
-            except Exception as exc:
-                logger.warning(f"Error stopping Playwright: {exc}")
-
-        logger.info("Driver factory: cleanup complete.")
+        except Exception:
+            pass

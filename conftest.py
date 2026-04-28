@@ -16,6 +16,18 @@ from utils.logger import get_logger
 logger = get_logger(__name__)
 
 
+# ── Clear AI reports at session start ────────────────────────────────────────
+
+@pytest.fixture(scope="session", autouse=True)
+def clear_ai_reports():
+    """Wipe AI report files before each test session so they don't accumulate across runs."""
+    for report_file in (config.AI_FAILURE_REPORT, config.AI_FAILURE_REPORT.parent / "self_healing_report.txt"):
+        try:
+            report_file.unlink(missing_ok=True)
+        except Exception:
+            pass
+
+
 # ── Session-level login ───────────────────────────────────────────────────────
 
 @pytest.fixture(scope="session")
@@ -72,6 +84,7 @@ def driver():
 
 # ── Failure hook ──────────────────────────────────────────────────────────────
 
+# pytest calls this after every test. We use it to auto-screenshot + AI-analyse any failure.
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield

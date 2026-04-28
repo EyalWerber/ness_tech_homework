@@ -31,7 +31,7 @@ logger = get_logger(__name__)
 
 _SEARCH_URL = "https://www.terminalx.com/catalogsearch/result/?q={query}"
 
-_SEL_PRODUCT_CARD = sel("search", "product_card", "li[class*='listing-product']")
+_SEL_PRODUCT_CARD = sel("search", "product_card")
 
 
 class SearchPage(BasePage):

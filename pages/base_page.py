@@ -6,6 +6,7 @@ from playwright.sync_api import Locator, Page, TimeoutError as PlaywrightTimeout
 import utils.ai_agent as ai_agent
 from utils.config_loader import config
 from utils.logger import get_logger
+from utils import selector_store
 
 logger = get_logger(__name__)
 
@@ -27,35 +28,51 @@ class BasePage:
         return self.page.locator(selector)
 
     def _try_heal(self, selector: str, description: str, action: str, fill_value: str | None = None) -> bool:
-        try:
-            html = self.page.content()
-        except Exception:
-            return False
-
-        healed = ai_agent.heal_locator(html, description)
+        # Ask the AI to find a working selector, try the action again, and save it to selectors.json if it works.
+        healed = ai_agent.heal_locator(self.page, description, broken_selector=selector)
         if not healed:
+            ai_agent.record_healing(selector, description, healed_selector=None, success=False)
             return False
 
+        # Try the healed selector — keep record_healing outside the try so write_back can't cause a double-write.
+        success = False
         try:
             loc = self._loc(healed).first
-            loc.wait_for(state="visible", timeout=self._timeout)
+            # Use "attached" so hidden-until-hover elements (e.g. remove buttons) still verify.
+            # force=True on click bypasses the visibility check for the same reason.
+            loc.wait_for(state="attached", timeout=8_000)
             if action == "click":
-                loc.click()
+                loc.click(force=True)
             elif action == "fill" and fill_value is not None:
                 loc.fill(fill_value)
-            logger.info(f"[self-heal] SUCCESS: {healed}")
-            return True
+            success = True
         except Exception as exc:
             logger.warning(f"[self-heal] Healed selector also failed ({healed}): {exc}")
-            return False
+
+        ai_agent.record_healing(selector, description, healed_selector=healed, success=success)
+        if success:
+            logger.info(f"[self-heal] SUCCESS: {healed}")
+            try:
+                selector_store.write_back(selector, healed)
+            except Exception:
+                pass
+        return success
 
     # ── Actions ───────────────────────────────────────────────────────────────
+
+    # With timeout=0 (infinite), a broken selector hangs forever and healing never fires.
+    # Cap it at 15s so failures surface quickly and the AI healer gets a chance to run.
+    _HEAL_ATTEMPT_TIMEOUT = 15_000
+
+    @property
+    def _action_timeout(self) -> int:
+        return self._timeout or self._HEAL_ATTEMPT_TIMEOUT
 
     def click(self, selector: str, description: str = "") -> None:
         desc = description or selector
         try:
             loc = self._loc(selector).first
-            loc.wait_for(state="visible", timeout=self._timeout)
+            loc.wait_for(state="visible", timeout=self._action_timeout)
             loc.click()
         except (PlaywrightTimeout, Exception) as exc:
             logger.warning(f"[click] Failed '{selector}': {exc}")
@@ -67,7 +84,7 @@ class BasePage:
         desc = description or selector
         try:
             loc = self._loc(selector).first
-            loc.wait_for(state="visible", timeout=self._timeout)
+            loc.wait_for(state="visible", timeout=self._action_timeout)
             loc.fill(value)
         except (PlaywrightTimeout, Exception) as exc:
             logger.warning(f"[fill] Failed '{selector}': {exc}")

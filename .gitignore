@@ -1,6 +1,13 @@
 # Credentials
 .env
 
+# Local utility scripts
+start_ollama.ps1
+
+# Self-healing coverage tests (local dev only)
+tests/test_self_healing_all.py
+reports/self_healing_report.txt
+
 # Session cookies
 reports/session_state.json
 

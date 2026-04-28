@@ -29,10 +29,10 @@ logger = get_logger(__name__)
 
 _CART_URL = "https://www.terminalx.com/checkout/cart"
 
-_SEL_ORDER_TOTAL  = sel("cart", "order_total",  "[data-test-id='qa-order-totals-total-order']")
-_SEL_CART_ITEM    = sel("cart", "cart_item",    "[data-test-id='qa-cart-product-name']")
-_SEL_EMPTY_CART   = sel("cart", "empty_cart",   ".cart-empty")
-_SEL_REMOVE_ITEM  = sel("cart", "remove_item",  "button[class*='remove_wqPe']:not([class*='close_3POI'])")
+_SEL_ORDER_TOTAL = sel("cart", "order_total")
+_SEL_CART_ITEM   = sel("cart", "cart_item")
+_SEL_EMPTY_CART  = sel("cart", "empty_cart")
+_SEL_REMOVE_ITEM = sel("cart", "remove_item")
 
 
 class CartPage(BasePage):
@@ -57,8 +57,8 @@ class CartPage(BasePage):
         removed = 0
         for _ in range(50):  # safety cap
             try:
-                # page.evaluate() fires JS atomically (no element_handle resolution),
-                # avoiding the race where the locator detaches between find and click.
+                # Using page.evaluate (raw JS) because locator.click() can race-condition:
+                # the element detaches between "find" and "click" during React re-renders.
                 clicked = self.page.evaluate(
                     """() => {
                         const btn = document.querySelector(

@@ -1,51 +1,36 @@
 """
-SelectorStore – loads data/selectors.json and provides selectors to page objects.
-
-Usage in page files:
-    from utils.selector_store import sel
-    EMAIL_INPUT = sel("login", "email_input", fallback="input[type='email']")
-
-If selectors.json doesn't exist yet, the fallback is always returned.
-Run `python discover_selectors.py` to generate the file.
+All selectors live in data/selectors.json.
+If the AI healer finds a better selector, write_back() saves it there.
+Next run picks up the updated value automatically.
 """
-
-from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from utils.logger import get_logger
-
-logger = get_logger(__name__)
-
-_SELECTORS_FILE = Path("data/selectors.json")
+_FILE = Path("data/selectors.json")
 _store: dict = {}
 
 
 def _load():
     global _store
-    if _SELECTORS_FILE.exists():
-        try:
-            _store = json.loads(_SELECTORS_FILE.read_text(encoding="utf-8"))
-            logger.info(f"[selector-store] Loaded {_SELECTORS_FILE}")
-        except Exception as exc:
-            logger.warning(f"[selector-store] Failed to load {_SELECTORS_FILE}: {exc}")
-            _store = {}
-    else:
-        logger.warning(
-            f"[selector-store] {_SELECTORS_FILE} not found – using hardcoded fallbacks. "
-            "Run: python discover_selectors.py"
-        )
+    if _FILE.exists():
+        _store = json.loads(_FILE.read_text(encoding="utf-8"))
 
 
-_load()
+_load()  # runs once at import time
 
 
-def sel(page: str, key: str, fallback: str = "") -> str:
-    """Return the discovered selector for *page*/*key*, or *fallback* if missing."""
-    return _store.get(page, {}).get(key) or fallback
+def sel(page: str, key: str) -> str:
+    """Look up a selector from selectors.json by page + key."""
+    return _store.get(page, {}).get(key, "")
 
 
-def reload():
-    """Re-read selectors.json from disk (call after running discovery)."""
-    _load()
+def write_back(broken: str, healed: str) -> bool:
+    """Scan selectors.json for the broken value, replace it, and save the file."""
+    for page, keys in _store.items():
+        for key, value in keys.items():
+            if value == broken:
+                _store[page][key] = healed
+                _FILE.write_text(json.dumps(_store, ensure_ascii=False, indent=2), encoding="utf-8")
+                return True
+    return False  # broken selector wasn't from selectors.json (e.g. a test-injected broken one)

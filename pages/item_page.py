@@ -31,11 +31,11 @@ from utils.selector_store import sel
 
 logger = get_logger(__name__)
 
-_SEL_SIZE_BTN        = sel("product", "size_option",        "[data-test-id='qa-size-item']")
-_SEL_COLOR_SWATCH    = sel("product", "color_option",       "[data-test-id='qa-color-item']")
-_SEL_ADD_TO_CART     = sel("product", "add_to_cart",        "[data-test-id='qa-add-to-cart-button']")
-_SEL_MINICART_OK     = sel("product", "mini_cart_indicator","[data-test-id='qa-minicart-product-name']")
-_SEL_MINICART_CLOSE  = sel("product", "mini_cart_close",    "button[class*='close_3POI']")
+_SEL_SIZE_BTN       = sel("product", "size_option")
+_SEL_COLOR_SWATCH   = sel("product", "color_option")
+_SEL_ADD_TO_CART    = sel("product", "add_to_cart")
+_SEL_MINICART_OK    = sel("product", "mini_cart_indicator")
+_SEL_MINICART_CLOSE = sel("product", "mini_cart_close")
 
 
 class ItemPage(BasePage):
@@ -59,12 +59,16 @@ class ItemPage(BasePage):
         try:
             swatches = self.page.locator(_SEL_COLOR_SWATCH).all()
             if swatches:
-                chosen = random.choice(swatches)
-                chosen.click()
+                random.choice(swatches).click()
                 logger.info("Colour selected.")
                 time.sleep(0.5)
         except Exception as exc:
-            logger.debug(f"Colour selection skipped: {exc}")
+            logger.debug(f"Colour direct click failed – trying self-heal: {exc}")
+            try:
+                self.click(_SEL_COLOR_SWATCH, description="colour swatch selector")
+                time.sleep(0.5)
+            except Exception:
+                logger.debug("Colour selection skipped after heal attempt.")
 
     def _select_size(self) -> None:
         try:
@@ -89,14 +93,17 @@ class ItemPage(BasePage):
             logger.info(f"Size selected: {size_label}")
             time.sleep(0.5)
         except Exception as exc:
-            logger.debug(f"Size selection skipped: {exc}")
+            logger.debug(f"Size direct click failed – trying self-heal: {exc}")
+            try:
+                self.click(_SEL_SIZE_BTN, description="size option button")
+                time.sleep(0.5)
+            except Exception:
+                logger.debug("Size selection skipped after heal attempt.")
 
     @retry(max_attempts=3, delay=2.0, exceptions=(Exception,))
     @allure.step("Add item to cart")
     def add_to_cart(self) -> None:
-        btn = self.page.locator(_SEL_ADD_TO_CART).first
-        btn.wait_for(state="visible", timeout=self._timeout)
-        btn.click()
+        self.click(_SEL_ADD_TO_CART, description="add to cart button")
         logger.info("Add-to-Cart clicked.")
 
         # Wait for mini-cart drawer to confirm the item was added

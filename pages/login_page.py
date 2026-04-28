@@ -28,17 +28,12 @@ logger = get_logger(__name__)
 _LOGIN_URL = "https://www.terminalx.com/customer/account/login"
 
 # ── Selectors (discovered at runtime; hardcoded values are fallbacks) ─────────
-_SEL_EMAIL = sel("login", "email_input",          "input#qa-login-email-input")
-_SEL_PASSWORD = sel("login", "password_input",    "input#qa-login-password-input")
-_SEL_SUBMIT = sel("login", "submit_button",       "[data-test-id='qa-login-submit']")
-_SEL_LOGGED_IN = sel("login", "logged_in_indicator",
-    "[data-test-id='qa-header-profile-button']"
-)
-_SEL_POPUP_CLOSE = sel("login", "popup_close",
-    "button[class*='close_3POI']"
-)
-
-_SEL_VERIFY_INPUT = "input[name='otp'], input[aria-label*='verification'], input[name='code']"
+_SEL_EMAIL        = sel("login", "email_input")
+_SEL_PASSWORD     = sel("login", "password_input")
+_SEL_SUBMIT       = sel("login", "submit_button")
+_SEL_LOGGED_IN    = sel("login", "logged_in_indicator")
+_SEL_POPUP_CLOSE  = sel("login", "popup_close")
+_SEL_VERIFY_INPUT = sel("login", "verify_input")
 
 
 class LoginPage(BasePage):

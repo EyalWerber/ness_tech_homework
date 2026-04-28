@@ -16,6 +16,7 @@ Run order (pytest executes in file order):
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import allure
@@ -190,3 +191,32 @@ class TestE2EFlow:
         cart_page.open_cart()
         cart_page.assert_total_not_exceeds(threshold)
         logger.info(f"Cart total ≤ ₪{threshold:.2f} — PASSED.")
+
+    # ── 5 ─────────────────────────────────────────────────────────────────────
+
+    @allure.title("Verify: self-healer wrote corrected selector back to selectors.json")
+    @allure.story("Self-Healing")
+    @allure.severity(allure.severity_level.CRITICAL)
+    def test_verify_selector_writeback(self, flow_state):
+        """Assert selectors.json was patched by the healer during test_add_items_to_cart."""
+        assert flow_state.get("added_count", 0) > 0, (
+            "No items were added — test_add_items_to_cart must pass first."
+        )
+
+        sel_file = Path(__file__).resolve().parents[1] / "data" / "selectors.json"
+        data = json.loads(sel_file.read_text(encoding="utf-8"))
+        healed_value = data["product"]["add_to_cart"]
+
+        allure.attach(
+            f"selectors.json → product.add_to_cart = {healed_value}",
+            name="Healed selector value",
+            attachment_type=allure.attachment_type.TEXT,
+        )
+
+        assert "BROKEN" not in healed_value, (
+            f"selectors.json was NOT updated — value still contains BROKEN: {healed_value!r}"
+        )
+        assert healed_value == "[data-test-id='qa-add-to-cart-button']", (
+            f"Healed to unexpected value: {healed_value!r}"
+        )
+        logger.info(f"[write-back] selectors.json correctly healed to: {healed_value}")

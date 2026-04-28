@@ -5,63 +5,49 @@ import json
 import re
 import time
 from pathlib import Path
-from typing import Any, Callable, Tuple, Type, TypeVar
 
 from playwright.sync_api import Page
 
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
-F = TypeVar("F", bound=Callable[..., Any])
 
 
 def parse_price(text: str) -> float:
-    """
-    Extract a numeric price from strings like:
-        '₪1,234'  →  1234.0
-        '499.90'  →  499.9
-        '1,299'   →  1299.0
-    Returns 0.0 on failure.
-    """
+    """Turn '₪1,234' or '499.90' into a float. Returns 0.0 if it can't parse."""
     if not text:
         return 0.0
-    # Strip currency symbols (₪, ILS, $) and whitespace, keep digits and dot
     cleaned = re.sub(r"[^\d.]", "", text.replace(",", ""))
-    if not cleaned or cleaned.count(".") > 1:
-        cleaned = cleaned.split(".")[0] if "." in cleaned else cleaned
+    # Edge case: multiple dots like "1.234.56" — keep only first segment
+    if cleaned.count(".") > 1:
+        cleaned = cleaned.split(".")[0]
     try:
         return float(cleaned) if cleaned else 0.0
     except ValueError:
-        logger.warning(f"parse_price: could not parse '{text}' → 0.0")
         return 0.0
 
 
-def retry(
-    max_attempts: int = 3,
-    delay: float = 1.5,
-    exceptions: Tuple[Type[Exception], ...] = (Exception,),
-):
-    def decorator(func: F) -> F:
+def retry(max_attempts=3, delay=1.5, exceptions=(Exception,)):
+    """Decorator: re-run a function up to max_attempts times if it raises."""
+    def decorator(func):
         @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
-            last_exc: Exception = RuntimeError("No attempts made")
+        def wrapper(*args, **kwargs):
+            last_exc = RuntimeError("No attempts made")
             for attempt in range(1, max_attempts + 1):
                 try:
                     return func(*args, **kwargs)
                 except exceptions as exc:
                     last_exc = exc
-                    logger.warning(
-                        f"[retry] {func.__name__} attempt {attempt}/{max_attempts}: "
-                        f"{type(exc).__name__}: {exc}"
-                    )
+                    logger.warning(f"[retry] {func.__name__} attempt {attempt}/{max_attempts}: {exc}")
                     if attempt < max_attempts:
                         time.sleep(delay)
             raise last_exc
-        return wrapper  # type: ignore[return-value]
+        return wrapper
     return decorator
 
 
 def take_screenshot(page: Page, name: str, screenshot_dir: Path) -> Path:
+    # Saves a full-page PNG with a timestamp in the name. Never raises — returns path regardless.
     screenshot_dir = Path(screenshot_dir)
     screenshot_dir.mkdir(parents=True, exist_ok=True)
     ts = time.strftime("%Y%m%d_%H%M%S")
