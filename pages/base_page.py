@@ -111,3 +111,24 @@ class BasePage:
             return self._loc(selector).count()
         except Exception:
             return 0
+
+    def ensure_any(self, selector: str, description: str = "") -> str:
+        """Return a selector that matches ≥1 element, healing via AI if needed. Raises if healing fails."""
+        if self.count(selector) > 0:
+            return selector
+        desc = description or selector
+        logger.warning(f"[ensure_any] No elements for '{selector}' – attempting heal")
+        with allure.step(f"[AI] Self-healing find – {desc}"):
+            healed = ai_agent.heal_locator(self.page, desc, broken_selector=selector)
+            if healed and self.count(healed) > 0:
+                ai_agent.record_healing(selector, desc, healed_selector=healed, success=True)
+                try:
+                    selector_store.write_back(selector, healed)
+                except Exception:
+                    pass
+                logger.info(f"[self-heal] SUCCESS: {healed}")
+                return healed
+            ai_agent.record_healing(selector, desc, healed_selector=healed, success=False)
+        raise AssertionError(
+            f"No elements found for '{selector}' and healing failed."
+        )

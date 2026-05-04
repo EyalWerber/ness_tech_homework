@@ -8,14 +8,14 @@
     "verify_input": "input[name='otp'], input[aria-label*='verification'], input[name='code']"
   },
   "search": {
-    "product_card": "li[class*='listing-product']",
+    "product_card": "li[class*=\"listing-product\"]",
     "product_link": "li[class*='listing-product'] a[class*='title']",
     "product_price": "li[class*='listing-product'] div[class*='final-price']"
   },
   "product": {
     "size_option": "[data-test-id='qa-size-item']",
     "color_option": "[data-test-id='qa-color-item']",
-    "add_to_cart": "[data-test-id='qa-add-to-cart-button']",
+    "add_to_cart": "[data-test-id=\"qa-add-to-cart-button\"]",
     "mini_cart_indicator": "[data-test-id='qa-minicart-product-name']",
     "mini_cart_close": "button[class*='close_3POI']"
   },

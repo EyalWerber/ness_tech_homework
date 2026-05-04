@@ -54,10 +54,10 @@ class SearchPage(BasePage):
 
     @allure.step("Collect up to {limit} item URLs ≤ ₪{max_price}")
     def collect_item_urls(self, max_price: float, limit: int = 5) -> list[str]:
-        self._assert_has_results()
+        card_selector = self._assert_has_results()
 
-        products: list[dict] = self.page.evaluate("""() => {
-            return Array.from(document.querySelectorAll('li[class*="listing-product"]'))
+        products: list[dict] = self.page.evaluate("""(selector) => {
+            return Array.from(document.querySelectorAll(selector))
                 .filter(el => el.offsetParent !== null)
                 .map(card => {
                     const link  = card.querySelector('a[class*="title"]');
@@ -68,7 +68,7 @@ class SearchPage(BasePage):
                     };
                 })
                 .filter(p => p.url);
-        }""")
+        }""", card_selector)
 
         urls: list[str] = []
         for item in products:
@@ -97,9 +97,5 @@ class SearchPage(BasePage):
             self.apply_price_filter(max_price)
             return self.collect_item_urls(max_price=max_price, limit=limit)
 
-    def _assert_has_results(self) -> None:
-        if self.count(_SEL_PRODUCT_CARD) == 0:
-            raise AssertionError(
-                "Search returned no product cards. "
-                "Try a different query or check the site's search functionality."
-            )
+    def _assert_has_results(self) -> str:
+        return self.ensure_any(_SEL_PRODUCT_CARD, "product search result card")

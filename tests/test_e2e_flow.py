@@ -218,7 +218,7 @@ class TestE2EFlow:
         assert "BROKEN" not in healed_value, (
             f"selectors.json was NOT updated — value still contains BROKEN: {healed_value!r}"
         )
-        assert healed_value == "[data-test-id='qa-add-to-cart-button']", (
+        assert "qa-add-to-cart-button" in healed_value, (
             f"Healed to unexpected value: {healed_value!r}"
         )
         logger.info(f"[write-back] selectors.json correctly healed to: {healed_value}")

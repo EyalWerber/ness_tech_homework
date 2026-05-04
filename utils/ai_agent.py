@@ -128,6 +128,7 @@ def heal_locator(page: Page, description: str, broken_selector: str = "") -> str
             temperature=0,
         )
         selector = response.choices[0].message.content.strip().strip("'\"` ")
+
         logger.info(f"[AI] Healed selector: {selector}")
         return selector
     except Exception as exc:
