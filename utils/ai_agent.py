@@ -60,16 +60,7 @@ def heal_locator(page: Page, description: str, broken_selector: str = "") -> str
     if client is None:
         return None
 
-    # Fast path: strip "BROKEN-" / "BROKEN" from the selector and test it live.
-    # Works for every class-based and data-test-id broken selector without an LLM call.
-    if "BROKEN" in broken_selector:
-        quick = re.sub(r"BROKEN-?", "", broken_selector).strip()
-        try:
-            if page.locator(quick).count() > 0:
-                logger.info(f"[AI] Fast-path healed (no LLM): {quick}")
-                return quick
-        except Exception:
-            pass
+   
 
     # Fetch HTML in the main thread before calling the LLM
     try:
