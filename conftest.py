@@ -5,18 +5,54 @@ from pathlib import Path
 
 import allure
 import pytest
+from playwright.sync_api import Browser, BrowserContext, Page, sync_playwright
 
 import utils.ai_agent as ai_agent
 from pages.login_page import LoginPage
 from utils.config_loader import config
-from utils.driver_factory import DriverFactory
 from utils.helpers import take_screenshot
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+# ── Fixture lifecycle ─────────────────────────────────────────────────────────
+#
+#  SESSION (once per pytest run)
+#  ├── playwright_instance  — Playwright process, started once
+#  ├── browser              — Browser process, launched once (~1-2s, expensive)
+#  └── session_state_path   — Login once, save cookies; all tests reuse them
+#
+#  PER TEST (fresh every test, browser process stays alive)
+#  ├── context  — New isolated profile (cookies, localStorage, etc.)
+#  └── page     — New tab inside that context
+#
+# Why this split: launching the browser is slow; creating a context is fast.
+# Each test gets full isolation without paying the browser startup cost every time.
 
-# ── Clear AI reports at session start ────────────────────────────────────────
+# ── Shared context settings ───────────────────────────────────────────────────
+
+_CONTEXT_KWARGS: dict = dict(
+    viewport={"width": 1440, "height": 900},
+    user_agent=(
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    java_script_enabled=True,
+    accept_downloads=True,
+    extra_http_headers={"Accept-Language": "he-IL,he;q=0.9,en-US;q=0.8"},
+    locale="he-IL",
+)
+
+
+def _new_context(browser: Browser, storage_state: str | None = None) -> BrowserContext:
+    """Open a fresh browser context (isolated cookies/storage) from the shared browser."""
+    ctx = browser.new_context(**_CONTEXT_KWARGS, **({"storage_state": storage_state} if storage_state else {}))
+    ctx.set_default_timeout(config.REQUEST_TIMEOUT)
+    return ctx
+
+
+# ── SESSION fixtures ──────────────────────────────────────────────────────────
 
 @pytest.fixture(scope="session", autouse=True)
 def clear_ai_reports():
@@ -28,14 +64,30 @@ def clear_ai_reports():
             pass
 
 
-# ── Session-level login ───────────────────────────────────────────────────────
+@pytest.fixture(scope="session")
+def playwright_instance():
+    """Start the Playwright driver process — shared for the whole session."""
+    pw = sync_playwright().start()
+    yield pw
+    pw.stop()
+
 
 @pytest.fixture(scope="session")
-def session_state_path() -> str:
-    """
-    Log in once per pytest session and persist cookies to SESSION_STATE_PATH.
-    Subsequent test functions restore the saved state instead of logging in again.
-    """
+def browser(playwright_instance) -> Browser:
+    """Launch the browser once for the whole session. Contexts (below) handle per-test isolation."""
+    launcher = getattr(playwright_instance, config.BROWSER)
+    b = launcher.launch(
+        headless=config.HEADLESS,
+        slow_mo=config.SLOW_MO,
+        args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+    )
+    yield b
+    b.close()  # called once, after all tests finish
+
+
+@pytest.fixture(scope="session")
+def session_state_path(browser) -> str:
+    """Log in once and save cookies to disk. Every test that needs auth loads this file."""
     state_path = str(config.SESSION_STATE_PATH)
 
     if Path(state_path).exists():
@@ -43,48 +95,44 @@ def session_state_path() -> str:
         return state_path
 
     if not config.TERMINALX_USERNAME or not config.TERMINALX_PASSWORD:
-        raise RuntimeError(
-            "TERMINALX_USERNAME and TERMINALX_PASSWORD must be set in .env."
-        )
+        raise RuntimeError("TERMINALX_USERNAME and TERMINALX_PASSWORD must be set in .env.")
 
     logger.info("[session] No saved session – performing fresh login …")
-    factory = DriverFactory()
-    page = factory.create()
+    ctx = _new_context(browser)
+    page = ctx.new_page()
     try:
         LoginPage(page).login(config.TERMINALX_USERNAME, config.TERMINALX_PASSWORD)
-        factory.save_session_state(state_path)
+        Path(state_path).parent.mkdir(parents=True, exist_ok=True)
+        ctx.storage_state(path=state_path)
         logger.info(f"[session] Login complete. State saved → {state_path}")
     finally:
-        factory.quit()
+        ctx.close()
 
     return state_path
 
 
-# ── Per-test authenticated page ───────────────────────────────────────────────
+# ── PER-TEST fixtures ─────────────────────────────────────────────────────────
+# Both fixtures below create a NEW context for every test, then close it when
+# the test ends. The browser process (above) stays alive the whole time.
 
 @pytest.fixture(scope="function")
-def authenticated_driver(session_state_path):
-    """Yields a Playwright page with the saved Terminal X session restored."""
-    factory = DriverFactory()
-    page = factory.create(storage_state=session_state_path)
-    yield page
-    factory.quit()
+def authenticated_driver(browser, session_state_path) -> Page:
+    """Fresh context + page, pre-loaded with the saved login session."""
+    ctx = _new_context(browser, storage_state=session_state_path)
+    yield ctx.new_page()
+    ctx.close()  # also discards the page — next test starts completely clean
 
-
-# ── Plain (unauthenticated) page ──────────────────────────────────────────────
 
 @pytest.fixture(scope="function")
-def driver():
-    """Yields a plain unauthenticated Playwright page."""
-    factory = DriverFactory()
-    page = factory.create()
-    yield page
-    factory.quit()
+def driver(browser) -> Page:
+    """Fresh context + page, no login state."""
+    ctx = _new_context(browser)
+    yield ctx.new_page()
+    ctx.close()
 
 
 # ── Failure hook ──────────────────────────────────────────────────────────────
 
-# pytest calls this after every test. We use it to auto-screenshot + AI-analyse any failure.
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield

@@ -354,3 +354,101 @@ waiting for locator("[data-test-id='qa-add-to-PISSSS-cart-button']").first to be
 2026-05-04 20:52:42 | INFO     | pages.cart_page | Cart assertion PASSED ✓
 2026-05-04 20:52:42 | INFO     | tests.test_e2e_flow | Cart total ≤ ₪1000.00 — PASSED.
 2026-05-04 20:52:42 | INFO     | tests.test_e2e_flow | [write-back] selectors.json correctly healed to: [data-test-id="qa-add-to-cart-button"]
+2026-05-05 13:00:48 | INFO     | conftest | [session] Reusing saved session: reports\session_state.json
+2026-05-05 13:00:49 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/checkout/cart
+2026-05-05 13:01:20 | INFO     | pages.cart_page | Cart cleared – 5 item(s) removed.
+2026-05-05 13:01:20 | INFO     | pages.base_page | Navigating → https://www.terminalx.com
+2026-05-05 13:01:24 | INFO     | tests.test_e2e_flow | [auth] Session confirmed.
+2026-05-05 13:01:24 | INFO     | pages.search_page | Opening search results URL: https://www.terminalx.com/catalogsearch/result/?q=מקסי
+2026-05-05 13:01:24 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/catalogsearch/result/?q=מקסי
+2026-05-05 13:01:36 | INFO     | pages.search_page | Price filter ≤ ₪200.0 applied in-memory during URL collection.
+2026-05-05 13:01:36 | DEBUG    | pages.search_page |   Skipped ₪430 > ₪200.0: https://www.terminalx.com/default-category/r686410002?color=
+2026-05-05 13:01:36 | DEBUG    | pages.search_page |   Skipped ₪430 > ₪200.0: https://www.terminalx.com/default-category/r686410001?color=
+2026-05-05 13:01:36 | DEBUG    | pages.search_page |   Skipped ₪230 > ₪200.0: https://www.terminalx.com/default-category/r758775119?color=
+2026-05-05 13:01:36 | DEBUG    | pages.search_page |   Skipped ₪230 > ₪200.0: https://www.terminalx.com/default-category/r758775073?color=
+2026-05-05 13:01:36 | INFO     | pages.search_page |   + ₪200  https://www.terminalx.com/default-category/r538050010?color=5
+2026-05-05 13:01:36 | INFO     | pages.search_page |   + ₪150  https://www.terminalx.com/default-category/r468140002?color=106
+2026-05-05 13:01:36 | INFO     | pages.search_page |   + ₪200  https://www.terminalx.com/default-category/r527380001?color=4
+2026-05-05 13:01:36 | INFO     | pages.search_page |   + ₪200  https://www.terminalx.com/default-category/r527380017?color=20
+2026-05-05 13:01:36 | INFO     | pages.search_page |   + ₪150  https://www.terminalx.com/default-category/r426400002?color=106
+2026-05-05 13:01:36 | INFO     | pages.search_page | Collected 5 URL(s) matching ≤ ₪200.0.
+2026-05-05 13:01:36 | INFO     | tests.test_e2e_flow | Search collected 5 URL(s) ≤ ₪200.0.
+2026-05-05 13:01:37 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/r538050010?color=5
+2026-05-05 13:01:41 | INFO     | pages.item_page | Colour selected.
+2026-05-05 13:01:42 | INFO     | pages.item_page | Size selected: S
+2026-05-05 13:01:42 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-05-05 13:01:43 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-05-05 13:01:43 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-05-05 13:01:44 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260505_130143.png
+2026-05-05 13:01:44 | INFO     | tests.test_e2e_flow | Item 1 added.
+2026-05-05 13:01:44 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/r468140002?color=106
+2026-05-05 13:01:47 | INFO     | pages.item_page | Colour selected.
+2026-05-05 13:01:48 | INFO     | pages.item_page | Size selected: S
+2026-05-05 13:01:49 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-05-05 13:01:50 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-05-05 13:01:50 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-05-05 13:01:50 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260505_130150.png
+2026-05-05 13:01:50 | INFO     | tests.test_e2e_flow | Item 2 added.
+2026-05-05 13:01:50 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/r527380001?color=4
+2026-05-05 13:01:53 | INFO     | pages.item_page | Colour selected.
+2026-05-05 13:01:54 | INFO     | pages.item_page | Size selected: S
+2026-05-05 13:01:55 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-05-05 13:01:56 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-05-05 13:01:56 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-05-05 13:01:57 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260505_130156.png
+2026-05-05 13:01:57 | INFO     | tests.test_e2e_flow | Item 3 added.
+2026-05-05 13:01:57 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/r527380017?color=20
+2026-05-05 13:02:00 | INFO     | pages.item_page | Colour selected.
+2026-05-05 13:02:01 | INFO     | pages.item_page | Size selected: S
+2026-05-05 13:02:01 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-05-05 13:02:03 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-05-05 13:02:03 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-05-05 13:02:04 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260505_130203.png
+2026-05-05 13:02:04 | INFO     | tests.test_e2e_flow | Item 4 added.
+2026-05-05 13:02:04 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/default-category/r426400002?color=106
+2026-05-05 13:02:14 | DEBUG    | pages.item_page | networkidle not reached – proceeding anyway.
+2026-05-05 13:02:14 | INFO     | pages.item_page | Colour selected.
+2026-05-05 13:02:15 | INFO     | pages.item_page | Size selected: S
+2026-05-05 13:02:16 | INFO     | pages.item_page | Add-to-Cart clicked.
+2026-05-05 13:02:18 | DEBUG    | pages.item_page | Mini-cart appeared – add to cart confirmed.
+2026-05-05 13:02:18 | DEBUG    | pages.item_page | Mini-cart drawer closed.
+2026-05-05 13:02:19 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\item_added_20260505_130218.png
+2026-05-05 13:02:19 | INFO     | tests.test_e2e_flow | Item 5 added.
+2026-05-05 13:02:19 | INFO     | tests.test_e2e_flow | 5/5 item(s) added to cart.
+2026-05-05 13:02:19 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/checkout/cart
+2026-05-05 13:02:35 | DEBUG    | pages.cart_page | networkidle not reached on cart – proceeding.
+2026-05-05 13:02:36 | INFO     | utils.helpers | Screenshot saved → reports\screenshots\cart_total_check_20260505_130235.png
+2026-05-05 13:02:36 | INFO     | pages.cart_page | Cart total: ₪899.50
+2026-05-05 13:02:36 | INFO     | pages.cart_page | Cart check → total=₪899.50, threshold=₪1000.00, items=5
+2026-05-05 13:02:36 | INFO     | pages.cart_page | Cart assertion PASSED ✓
+2026-05-05 13:02:36 | INFO     | tests.test_e2e_flow | Cart total ≤ ₪1000.00 — PASSED.
+2026-05-05 13:02:36 | INFO     | tests.test_e2e_flow | [write-back] selectors.json correctly healed to: [data-test-id="qa-add-to-cart-button"]
+2026-05-06 13:07:08 | INFO     | conftest | [session] Reusing saved session: reports\session_state.json
+2026-05-06 13:07:09 | INFO     | pages.base_page | Navigating → https://www.terminalx.com
+2026-05-06 13:07:11 | INFO     | utils.ai_agent | [AI] Requesting failure analysis …
+2026-05-06 14:06:39 | INFO     | conftest | [session] Reusing saved session: reports\session_state.json
+2026-05-06 14:06:39 | INFO     | pages.base_page | Navigating → https://www.terminalx.com
+2026-05-06 14:06:50 | WARNING  | pages.base_page | [click] Failed '[data-test-id='qa-BROKEN-search-button']': Locator.wait_for: Timeout 6000ms exceeded.
+Call log:
+waiting for locator("[data-test-id='qa-BROKEN-search-button']").first to be visible
+
+2026-05-06 14:06:50 | INFO     | utils.ai_agent | [AI] Healing locator for: 'search button in the site header'
+2026-05-06 14:06:56 | INFO     | utils.ai_agent | [AI] Healed selector: [data-test-id="qa-header-search-button"]
+2026-05-06 14:06:56 | INFO     | pages.base_page | [self-heal] SUCCESS: [data-test-id="qa-header-search-button"]
+2026-05-06 14:06:56 | INFO     | utils.ai_agent | [AI] Requesting failure analysis …
+2026-05-06 14:06:57 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/checkout/cart
+2026-05-06 14:07:17 | DEBUG    | pages.cart_page | Cart remove evaluate error (item 6): Page.evaluate: Target page, context or browser has been closed
+2026-05-06 14:07:17 | INFO     | pages.cart_page | Cart cleared – 5 item(s) removed.
+2026-05-06 14:07:17 | INFO     | pages.base_page | Navigating → https://www.terminalx.com
+2026-05-06 14:07:18 | WARNING  | tests.test_e2e_flow | [auth] Session expired – re-authenticating …
+2026-05-06 14:07:18 | INFO     | pages.login_page | Starting Terminal X login …
+2026-05-06 14:07:18 | INFO     | pages.base_page | Navigating → https://www.terminalx.com/customer/account/login
+2026-05-06 14:07:18 | INFO     | utils.ai_agent | [AI] Requesting failure analysis …
+2026-05-06 14:14:18 | INFO     | conftest | [session] Reusing saved session: reports\session_state.json
+2026-05-06 14:14:18 | INFO     | pages.base_page | Navigating → https://www.terminalx.com
+2026-05-06 14:14:22 | WARNING  | pages.base_page | [click] Failed '[data-test-id='qa-BROKEN-search-button']': Locator.wait_for: Target page, context or browser has been closed
+Call log:
+waiting for locator("[data-test-id='qa-BROKEN-search-button']").first to be visible
+
+2026-05-06 14:14:22 | WARNING  | utils.ai_agent | [AI] Could not get page content: Page.content: Target page, context or browser has been closed
+2026-05-06 14:14:22 | INFO     | utils.ai_agent | [AI] Requesting failure analysis …
